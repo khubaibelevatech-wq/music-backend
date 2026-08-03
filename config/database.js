@@ -23,15 +23,24 @@ const sequelize = new Sequelize(
   }
 );
 
+let isConnected = false;
+
 const connectDB = async () => {
+  if (isConnected) return sequelize;
+
   try {
     await sequelize.authenticate();
-    console.log('✅ MySQL Database connected successfully.');
-    await sequelize.sync({ alter: true });
-    console.log('✅ Database tables synced.');
+    console.log('MySQL database connected successfully.');
+
+    const syncOptions = process.env.NODE_ENV === 'production' ? {} : { alter: true };
+    await sequelize.sync(syncOptions);
+    console.log('Database tables synced.');
+
+    isConnected = true;
+    return sequelize;
   } catch (error) {
-    console.error('❌ Database connection failed:', error.message);
-    process.exit(1);
+    console.error('Database connection failed:', error.message);
+    throw error;
   }
 };
 
