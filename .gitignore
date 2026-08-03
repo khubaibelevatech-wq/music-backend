@@ -1,0 +1,9 @@
+node_modules/
+.env
+uploads/music/*
+uploads/thumbnails/*
+uploads/profiles/*
+!uploads/music/.gitkeep
+!uploads/thumbnails/.gitkeep
+!uploads/profiles/.gitkeep
+*.log

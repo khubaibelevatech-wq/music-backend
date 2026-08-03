@@ -1,0 +1,231 @@
+{
+  "info": {
+    "name": "Music Platform API",
+    "description": "Complete API collection for Music Sharing Platform",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"test_user\",\n  \"email\": \"user@example.com\",\n  \"password\": \"password123\",\n  \"full_name\": \"Test User\",\n  \"user_type\": \"user\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/auth/register", "host": ["{{base_url}}"], "path": ["api", "auth", "register"] }
+          }
+        },
+        {
+          "name": "Register Author",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"john_artist\",\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\",\n  \"full_name\": \"John Artist\",\n  \"user_type\": \"author\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/auth/register", "host": ["{{base_url}}"], "path": ["api", "auth", "register"] }
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["const response = pm.response.json();", "if (response.data && response.data.token) {", "  pm.collectionVariables.set('token', response.data.token);", "  console.log('Token saved:', response.data.token);", "}"],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/auth/login", "host": ["{{base_url}}"], "path": ["api", "auth", "login"] }
+          }
+        },
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/auth/profile", "host": ["{{base_url}}"], "path": ["api", "auth", "profile"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Music",
+      "item": [
+        {
+          "name": "Get All Music",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/api/music?page=1&limit=20", "host": ["{{base_url}}"], "path": ["api", "music"], "query": [{ "key": "page", "value": "1" }, { "key": "limit", "value": "20" }] }
+          }
+        },
+        {
+          "name": "Upload Music",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "title", "value": "My First Song", "type": "text" },
+                { "key": "genre", "value": "Pop", "type": "text" },
+                { "key": "description", "value": "A great song!", "type": "text" },
+                { "key": "duration", "value": "180", "type": "text" },
+                { "key": "audio", "type": "file", "src": "" },
+                { "key": "thumbnail", "type": "file", "src": "" }
+              ]
+            },
+            "url": { "raw": "{{base_url}}/api/music", "host": ["{{base_url}}"], "path": ["api", "music"] }
+          }
+        },
+        {
+          "name": "Get Music by ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/api/music/1", "host": ["{{base_url}}"], "path": ["api", "music", "1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Albums",
+      "item": [
+        {
+          "name": "Get All Albums",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/api/albums", "host": ["{{base_url}}"], "path": ["api", "albums"] }
+          }
+        },
+        {
+          "name": "Create Album",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "title", "value": "My First Album", "type": "text" },
+                { "key": "description", "value": "Collection of my best songs", "type": "text" },
+                { "key": "release_date", "value": "2024-01-15", "type": "text" },
+                { "key": "cover_image", "type": "file", "src": "" }
+              ]
+            },
+            "url": { "raw": "{{base_url}}/api/albums", "host": ["{{base_url}}"], "path": ["api", "albums"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Interactions",
+      "item": [
+        {
+          "name": "Like Track",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/interactions/like/1", "host": ["{{base_url}}"], "path": ["api", "interactions", "like", "1"] }
+          }
+        },
+        {
+          "name": "Add Comment",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"comment_text\": \"This track is amazing!\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/interactions/comment/1", "host": ["{{base_url}}"], "path": ["api", "interactions", "comment", "1"] }
+          }
+        },
+        {
+          "name": "Rate Track",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rating\": 5\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/interactions/rating/1", "host": ["{{base_url}}"], "path": ["api", "interactions", "rating", "1"] }
+          }
+        },
+        {
+          "name": "Follow Author",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/interactions/follow/2", "host": ["{{base_url}}"], "path": ["api", "interactions", "follow", "2"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Search",
+      "item": [
+        {
+          "name": "Search Music",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/api/search/music?q=pop", "host": ["{{base_url}}"], "path": ["api", "search", "music"], "query": [{ "key": "q", "value": "pop" }] }
+          }
+        },
+        {
+          "name": "Search Authors",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/api/search/authors?q=john", "host": ["{{base_url}}"], "path": ["api", "search", "authors"], "query": [{ "key": "q", "value": "john" }] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "item": [
+        {
+          "name": "Get All Notifications",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/notifications", "host": ["{{base_url}}"], "path": ["api", "notifications"] }
+          }
+        },
+        {
+          "name": "Mark as Read",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/notifications/1/read", "host": ["{{base_url}}"], "path": ["api", "notifications", "1", "read"] }
+          }
+        }
+      ]
+    }
+  ]
+}
