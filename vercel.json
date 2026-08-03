@@ -6,6 +6,10 @@
       "use": "@vercel/node"
     },
     {
+      "src": "api/debug-import.js",
+      "use": "@vercel/node"
+    },
+    {
       "src": "api/index.js",
       "use": "@vercel/node"
     }
@@ -14,6 +18,10 @@
     {
       "src": "/health",
       "dest": "api/health.js"
+    },
+    {
+      "src": "/debug-import",
+      "dest": "api/debug-import.js"
     },
     {
       "src": "/(.*)",
