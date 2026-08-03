@@ -32,8 +32,7 @@ const connectDB = async () => {
     await sequelize.authenticate();
     console.log('MySQL database connected successfully.');
 
-    const syncOptions = process.env.NODE_ENV === 'production' ? {} : { alter: true };
-    await sequelize.sync(syncOptions);
+    await sequelize.sync();
     console.log('Database tables synced.');
 
     isConnected = true;
