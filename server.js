@@ -34,6 +34,7 @@ const allowedOrigins = [
   ...(process.env.CLIENT_URLS ? process.env.CLIENT_URLS.split(',') : []),
   'http://localhost:3000',
   'http://localhost:3001',
+  'https://music-frontend-pi-tan.vercel.app',
   'https://toti-music.netlify.app',
 ].filter(Boolean).map((origin) => origin.trim());
 

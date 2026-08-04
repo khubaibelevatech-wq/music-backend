@@ -37,7 +37,7 @@ const getAllMusic = async (req, res, next) => {
     const { limit, offset, page } = getPagination(req.query);
 
     const where = {};
-    if (genre) where.genre = { [Op.like]: `%${genre}%` };
+    if (genre) where.genre = { [Op.iLike]: `%${genre}%` };
     if (author_id) where.author_id = author_id;
     if (album_id) where.album_id = album_id;
 

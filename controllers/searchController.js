@@ -12,7 +12,7 @@ const searchMusic = async (req, res, next) => {
     }
 
     const { limit, offset, page } = getPagination(req.query);
-    const like = { [Op.like]: `%${q.trim()}%` };
+    const like = { [Op.iLike]: `%${q.trim()}%` };
 
     const { count, rows } = await Music.findAndCountAll({
       where: {
@@ -64,7 +64,7 @@ const searchAuthors = async (req, res, next) => {
     }
 
     const { limit, offset, page } = getPagination(req.query);
-    const like = { [Op.like]: `%${q.trim()}%` };
+    const like = { [Op.iLike]: `%${q.trim()}%` };
 
     const { count, rows } = await User.findAndCountAll({
       where: {
@@ -102,7 +102,7 @@ const searchAlbums = async (req, res, next) => {
     }
 
     const { limit, offset, page } = getPagination(req.query);
-    const like = { [Op.like]: `%${q.trim()}%` };
+    const like = { [Op.iLike]: `%${q.trim()}%` };
 
     const { count, rows } = await Album.findAndCountAll({
       where: { title: like },
