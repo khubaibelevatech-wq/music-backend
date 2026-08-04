@@ -4,7 +4,6 @@ const path = require('path');
 const cors = require('cors');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
-const swaggerUi = require('swagger-ui-express');
 const { swaggerSpec, swaggerUiOptions } = require('./config/swagger');
 const { connectDB } = require('./config/database');
 const errorHandler = require('./middleware/errorHandler');
@@ -77,7 +76,46 @@ app.get('/health', (req, res) => {
 app.get('/openapi.json', (req, res) => {
   res.json(swaggerSpec);
 });
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, swaggerUiOptions));
+
+app.get(['/api-docs', '/api-docs/'], (req, res) => {
+  const customCss = JSON.stringify(swaggerUiOptions.customCss || '');
+
+  res.type('html').send(`<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Soundwave Backend API</title>
+  <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css" />
+  <style id="soundwave-swagger-style"></style>
+</head>
+<body>
+  <div id="swagger-ui"></div>
+  <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js"></script>
+  <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-standalone-preset.js"></script>
+  <script>
+    document.getElementById('soundwave-swagger-style').textContent = ${customCss};
+    window.ui = SwaggerUIBundle({
+      url: '/openapi.json',
+      dom_id: '#swagger-ui',
+      deepLinking: true,
+      displayRequestDuration: true,
+      docExpansion: 'none',
+      filter: true,
+      persistAuthorization: true,
+      presets: [
+        SwaggerUIBundle.presets.apis,
+        SwaggerUIStandalonePreset
+      ],
+      plugins: [
+        SwaggerUIBundle.plugins.DownloadUrl
+      ],
+      layout: 'StandaloneLayout'
+    });
+  </script>
+</body>
+</html>`);
+});
 
 app.use('/api', async (req, res, next) => {
   try {
