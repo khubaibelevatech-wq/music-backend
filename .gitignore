@@ -7,3 +7,5 @@ uploads/profiles/*
 !uploads/thumbnails/.gitkeep
 !uploads/profiles/.gitkeep
 *.log
+.vercel
+.env*

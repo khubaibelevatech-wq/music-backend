@@ -7,14 +7,14 @@
     },
     {
       "src": "api/index.js",
-      "use": "@vercel/node"
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": [
+          "uploads/**"
+        ]
+      }
     }
   ],
-  "functions": {
-    "api/index.js": {
-      "includeFiles": "uploads/**"
-    }
-  },
   "routes": [
     {
       "src": "/health",
