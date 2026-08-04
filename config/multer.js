@@ -1,17 +1,20 @@
 const multer = require('multer');
 const path = require('path');
+const os = require('os');
 const { v4: uuidv4 } = require('crypto').webcrypto
   ? require('crypto')
   : require('crypto');
 const fs = require('fs');
 
+const uploadRoot = process.env.VERCEL ? path.join(os.tmpdir(), 'uploads') : 'uploads';
+const uploadDirs = {
+  music: path.join(uploadRoot, 'music'),
+  thumbnails: path.join(uploadRoot, 'thumbnails'),
+  profiles: path.join(uploadRoot, 'profiles'),
+};
+
 // Ensure upload directories exist
-const dirs = [
-  'uploads/music',
-  'uploads/thumbnails',
-  'uploads/profiles',
-];
-dirs.forEach((dir) => {
+Object.values(uploadDirs).forEach((dir) => {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
   }
@@ -41,7 +44,7 @@ const generateFilename = (file) => {
 
 // ─── Audio Storage ───────────────────────────────────────────────────────────
 const audioStorage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, 'uploads/music/'),
+  destination: (req, file, cb) => cb(null, uploadDirs.music),
   filename: (req, file, cb) => cb(null, generateFilename(file)),
 });
 
@@ -60,12 +63,12 @@ const audioFilter = (req, file, cb) => {
 
 // ─── Image Storage ───────────────────────────────────────────────────────────
 const thumbnailStorage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, 'uploads/thumbnails/'),
+  destination: (req, file, cb) => cb(null, uploadDirs.thumbnails),
   filename: (req, file, cb) => cb(null, generateFilename(file)),
 });
 
 const profileStorage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, 'uploads/profiles/'),
+  destination: (req, file, cb) => cb(null, uploadDirs.profiles),
   filename: (req, file, cb) => cb(null, generateFilename(file)),
 });
 
@@ -108,8 +111,8 @@ const uploadProfile = multer({
 const musicUploadFields = multer({
   storage: multer.diskStorage({
     destination: (req, file, cb) => {
-      if (file.fieldname === 'audio') cb(null, 'uploads/music/');
-      else cb(null, 'uploads/thumbnails/');
+      if (file.fieldname === 'audio') cb(null, uploadDirs.music);
+      else cb(null, uploadDirs.thumbnails);
     },
     filename: (req, file, cb) => cb(null, generateFilename(file)),
   }),
@@ -125,8 +128,8 @@ const musicUploadFields = multer({
 const albumUploadFields = multer({
   storage: multer.diskStorage({
     destination: (req, file, cb) => {
-      if (file.fieldname === 'audio_files') cb(null, 'uploads/music/');
-      else cb(null, 'uploads/thumbnails/');
+      if (file.fieldname === 'audio_files') cb(null, uploadDirs.music);
+      else cb(null, uploadDirs.thumbnails);
     },
     filename: (req, file, cb) => cb(null, generateFilename(file)),
   }),
