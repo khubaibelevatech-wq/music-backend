@@ -16,6 +16,8 @@ const notificationRoutes = require('./routes/notificationRoutes');
 const searchRoutes = require('./routes/searchRoutes');
 
 const app = express();
+app.set('trust proxy', 1);
+
 let dbReady;
 
 const ensureDatabase = () => {
