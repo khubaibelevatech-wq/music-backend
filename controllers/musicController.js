@@ -1,6 +1,6 @@
 const { Op } = require('sequelize');
 const { Music, User, Album, Like, Comment, Rating } = require('../models');
-const { deleteFile } = require('../utils/fileUtils');
+const { deleteFile, toUploadUrl } = require('../utils/fileUtils');
 const { getPagination, getPaginationMeta } = require('../utils/pagination');
 const { sanitizeText } = require('../utils/sanitize');
 const { sequelize } = require('../config/database');
@@ -153,9 +153,9 @@ const uploadMusic = async (req, res, next) => {
       }
     }
 
-    const audioPath = req.files.audio[0].path.replace(/\\/g, '/');
+    const audioPath = toUploadUrl(req.files.audio[0].path);
     const thumbnailPath = req.files.thumbnail
-      ? req.files.thumbnail[0].path.replace(/\\/g, '/')
+      ? toUploadUrl(req.files.thumbnail[0].path)
       : null;
 
     const track = await Music.create({
@@ -206,7 +206,7 @@ const updateMusic = async (req, res, next) => {
     // New thumbnail?
     if (req.file) {
       if (track.thumbnail_url) deleteFile(track.thumbnail_url);
-      track.thumbnail_url = req.file.path.replace(/\\/g, '/');
+      track.thumbnail_url = toUploadUrl(req.file.path);
     }
 
     await track.save();

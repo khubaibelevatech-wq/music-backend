@@ -1,6 +1,6 @@
 const { User } = require('../models');
 const generateToken = require('../utils/generateToken');
-const { deleteFile } = require('../utils/fileUtils');
+const { deleteFile, toUploadUrl } = require('../utils/fileUtils');
 
 // ─── Register ────────────────────────────────────────────────────────────────
 const register = async (req, res, next) => {
@@ -104,7 +104,7 @@ const updateProfile = async (req, res, next) => {
     if (req.file) {
       // Delete old profile picture
       if (user.profile_picture) deleteFile(user.profile_picture);
-      user.profile_picture = req.file.path.replace(/\\/g, '/');
+      user.profile_picture = toUploadUrl(req.file.path);
     }
 
     await user.save();

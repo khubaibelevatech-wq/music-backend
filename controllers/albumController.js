@@ -1,5 +1,5 @@
 const { Album, Music, User } = require('../models');
-const { deleteFile } = require('../utils/fileUtils');
+const { deleteFile, toUploadUrl } = require('../utils/fileUtils');
 const { getPagination, getPaginationMeta } = require('../utils/pagination');
 const { sanitizeText } = require('../utils/sanitize');
 
@@ -113,7 +113,7 @@ const createAlbum = async (req, res, next) => {
     const { title, description, release_date, track_ids } = req.body;
     const coverFile = req.files?.cover_image?.[0] || req.file || null;
     const audioFiles = req.files?.audio_files || [];
-    const coverPath = coverFile ? coverFile.path.replace(/\\/g, '/') : null;
+    const coverPath = coverFile ? toUploadUrl(coverFile.path) : null;
     const selectedTrackIds = [...new Set(parseTrackIds(track_ids))];
     const totalTracks = selectedTrackIds.length + audioFiles.length;
 
@@ -152,7 +152,7 @@ const createAlbum = async (req, res, next) => {
           album_id: album.id,
           title: cleanAudioTitle(file.originalname),
           description: description ? sanitizeText(description) : null,
-          audio_file_url: file.path.replace(/\\/g, '/'),
+          audio_file_url: toUploadUrl(file.path),
         }))
       );
     }
@@ -187,7 +187,7 @@ const updateAlbum = async (req, res, next) => {
 
     if (req.file) {
       if (album.cover_image) deleteFile(album.cover_image);
-      album.cover_image = req.file.path.replace(/\\/g, '/');
+      album.cover_image = toUploadUrl(req.file.path);
     }
 
     await album.save();

@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const path = require('path');
 const cors = require('cors');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
@@ -7,6 +8,7 @@ const swaggerUi = require('swagger-ui-express');
 const { swaggerSpec, swaggerUiOptions } = require('./config/swagger');
 const { connectDB } = require('./config/database');
 const errorHandler = require('./middleware/errorHandler');
+const { runtimeUploadRoot } = require('./utils/fileUtils');
 
 const authRoutes = require('./routes/authRoutes');
 const musicRoutes = require('./routes/musicRoutes');
@@ -48,7 +50,8 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan(process.env.NODE_ENV === 'development' ? 'dev' : 'combined'));
-app.use('/uploads', express.static('uploads'));
+app.use('/uploads', express.static(runtimeUploadRoot));
+app.use('/uploads', express.static(path.resolve('uploads')));
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
